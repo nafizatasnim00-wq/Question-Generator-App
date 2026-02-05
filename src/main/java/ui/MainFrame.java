@@ -59,48 +59,7 @@ public class MainFrame extends JFrame {
         add(mainPanel);
     }
 
-    /*private JPanel createTopPanel() {
-        JPanel panel = new JPanel();
-
-        JButton uploadBtn = new JButton("Upload Lecture (.txt)");
-        JButton generateBtn = new JButton("Generate Questions");
-
-        typeBox = new JComboBox<>(new String[]{"MCQ", "Short", "Coding"});
-        difficultyBox = new JComboBox<>(new String[]{"Easy", "Medium", "Hard"});
-
-        panel.add(uploadBtn);
-        panel.add(new JLabel("Type:"));
-        panel.add(typeBox);
-        panel.add(new JLabel("Difficulty:"));
-        panel.add(difficultyBox);
-        panel.add(generateBtn);
-
-        uploadBtn.addActionListener(e -> uploadLecture());
-        generateBtn.addActionListener(e -> generateQuestions());
-
-        return panel;
-    }
-
-    private JSplitPane createCenterPanel() {
-        lectureArea = new JTextArea();
-        outputArea = new JTextArea();
-
-        lectureArea.setBorder(
-            BorderFactory.createTitledBorder("Lecture Content")
-        );
-        outputArea.setBorder(
-            BorderFactory.createTitledBorder("Generated Questions")
-        );
-
-        JSplitPane splitPane = new JSplitPane(
-            JSplitPane.HORIZONTAL_SPLIT,
-            new JScrollPane(lectureArea),
-            new JScrollPane(outputArea)
-        );
-        splitPane.setDividerLocation(380);
-
-        return splitPane;
-    }*/
+    
    private JPanel createUploadPage() {
     JPanel panel = new JPanel(new BorderLayout());
 
