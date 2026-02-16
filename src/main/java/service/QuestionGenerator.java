@@ -1,6 +1,7 @@
 package service;
 import java.util.*;
 import model.Question;
+import java.util.List;
 
 public class QuestionGenerator {
 
@@ -38,7 +39,7 @@ public class QuestionGenerator {
         return sb.toString();
     }
 
-    private static List<String> extractKeywords(String text) {
+    public static List<String> extractKeywords(String text) {
         String[] words = text.split("\\W+");
         Map<String, Integer> freq = new HashMap<>();
 
@@ -55,27 +56,26 @@ public class QuestionGenerator {
 
 
 
-public static List<Question> generateQuiz(String text, int limit) {
+public static List<Question> generateQuiz(
+        String text,
+        String difficulty,
+        OptionProvider provider) {
 
     List<String> keywords = extractKeywords(text);
-    List<Question> questions = new ArrayList<>();
+    List<Question> list = new ArrayList<>();
 
-    for (int i = 0; i < Math.min(limit, keywords.size()); i++) {
-        String key = keywords.get(i);
+    for (String key : keywords) {
 
-        List<String> options = Arrays.asList(
-            "Option 1",
-            "Option 2",
-            "Option 3",
-            "Option 4"
-        );
+        List<String> options = provider.getOptions(key, difficulty);
+        int correct = provider.getCorrectIndex(key);
 
-        questions.add(new Question(
-            "What is " + key + "?",
-            options,
-            0   // correct option
+        if (options.isEmpty()) continue;
+
+        list.add(new Question(
+                "What is " + key + "?",
+                options,
+                correct
         ));
     }
-    return questions;
-}
-}
+    return list;
+}}

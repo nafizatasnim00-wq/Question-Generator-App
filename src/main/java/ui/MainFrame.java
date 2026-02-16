@@ -93,17 +93,23 @@ public class MainFrame extends JFrame {
     uploadBtn.addActionListener(e -> uploadLecture());
     generateBtn.addActionListener(e -> generateQuestions());
 
-    quizBtn.addActionListener(e -> {
+   quizBtn.addActionListener(e -> {
 
-        if (lectureArea.getText().isEmpty()) {
-            showError("Upload lecture content first!");
-            return;
-        }
+    if (lectureArea.getText().isEmpty()) {
+        showError("Upload lecture content first!");
+        return;
+    }
 
-        quizQuestions = quizService.createQuiz(lectureArea.getText());
-        loadQuizQuestions();
-        cardLayout.show(mainPanel, "QUIZ");
-    });
+    quizQuestions = quizService.createQuiz(
+            lectureArea.getText(),
+            difficultyBox.getSelectedItem().toString(),
+            selectedFile != null
+    );
+
+    loadQuizQuestions();
+    cardLayout.show(mainPanel, "QUIZ");
+});
+
 
     return panel;
 }

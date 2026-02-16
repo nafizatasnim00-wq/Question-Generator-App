@@ -1,9 +1,5 @@
 Question Type: Short
 Difficulty: Easy
 
-1. Explain encapsulation.
-
-2. Explain swing.
-
-3. Explain concepts.
+1. Explain polymorphism.
 
