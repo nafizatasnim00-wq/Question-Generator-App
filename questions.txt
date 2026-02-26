@@ -1,5 +1,21 @@
-Question Type: Short
+Question Type: MCQ
 Difficulty: Easy
 
-1. Explain polymorphism.
+1. What is encapsulation?
+a) Option 1
+b) Option 2
+c) Option 3
+d) Option 4
+
+2. What is swing?
+a) Option 1
+b) Option 2
+c) Option 3
+d) Option 4
+
+3. What is concepts?
+a) Option 1
+b) Option 2
+c) Option 3
+d) Option 4
 

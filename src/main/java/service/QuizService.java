@@ -15,16 +15,16 @@ public List<Question> createQuiz(
     QuestionDAO dao = new QuestionDAO();
     List<Question> finalQuiz = new ArrayList<>();
 
-    // 1️⃣ No file → DB quiz directly
+    // No file → DB quiz directly
     if (!fileUploaded) {
         return dao.getQuestions(text, difficulty, 5);
     }
 
-    // 2️⃣ File uploaded → extract ALL keywords
+    // File uploaded → extract ALL keywords
     List<String> keywords =
             QuestionGenerator.extractKeywords(text);
 
-    // 3️⃣ For EACH keyword, try DB match
+    // For EACH keyword, try DB match
     for (String key : keywords) {
 
         if (dao.topicExists(key)) {
@@ -36,12 +36,12 @@ public List<Question> createQuiz(
         }
     }
 
-    // 4️⃣ If at least ONE DB topic matched → return DB quiz
+    // If at least ONE DB topic matched → return DB quiz
     if (!finalQuiz.isEmpty()) {
         return finalQuiz;
     }
 
-    // 5️⃣ Otherwise → fallback to logic-based quiz
+    // Otherwise → fallback to logic-based quiz
     return QuestionGenerator.generateQuiz(
             text,
             difficulty,
