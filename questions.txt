@@ -1,21 +1,23 @@
-Question Type: MCQ
+Question Type: Short
 Difficulty: Easy
 
-1. What is encapsulation?
-a) Option 1
-b) Option 2
-c) Option 3
-d) Option 4
+1. What is encapsulation in OOP?
 
-2. What is swing?
-a) Option 1
-b) Option 2
-c) Option 3
-d) Option 4
+2. How does encapsulation improve security?
 
-3. What is concepts?
-a) Option 1
-b) Option 2
-c) Option 3
-d) Option 4
+3. Explain data hiding.
+
+4. What is inheritance in OOP?
+
+5. What are the advantages of inheritance?
+
+6. Explain single inheritance.
+
+7. What is polymorphism in OOP ?
+
+8. What the main two types of polymorphism?
+
+9. How does method overloading support polymorphism?
+
+10. Why is polymorphism important in OOP?
 

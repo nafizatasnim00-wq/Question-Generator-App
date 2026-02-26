@@ -102,5 +102,82 @@ public class QuestionDAO {
         return false;
     }
 }
+public List<String> getQuestionTexts(
+        String topic,
+        String difficulty,
+        int limit) {
 
+    List<String> list = new ArrayList<>();
+
+    String sql = """
+        SELECT q.question_text
+        FROM questions q
+        JOIN topics t ON q.topic_id = t.topic_no
+        WHERE LOWER(t.topic_name) = LOWER(?)
+          AND q.difficulty = ?
+        LIMIT ?
+    """;
+
+    try (Connection con = DBConnection.getConnection();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+
+        ps.setString(1, topic);
+        ps.setString(2, difficulty);
+        ps.setInt(3, limit);
+
+        ResultSet rs = ps.executeQuery();
+
+        while (rs.next()) {
+            list.add(rs.getString("question_text"));
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return list;
+}
+public List<Question> getMCQQuestions(
+        String topic,
+        String difficulty,
+        int limit) {
+
+    List<Question> list = new ArrayList<>();
+
+    String sql = """
+        SELECT q.question_id, q.question_text
+        FROM questions q
+        JOIN topics t ON q.topic_id = t.topic_no
+        WHERE LOWER(t.topic_name) = LOWER(?)
+          AND q.difficulty = ?
+        LIMIT ?
+    """;
+
+    try (Connection con = DBConnection.getConnection();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+
+        ps.setString(1, topic);
+        ps.setString(2, difficulty);
+        ps.setInt(3, limit);
+
+        ResultSet rs = ps.executeQuery();
+
+        while (rs.next()) {
+            int qid = rs.getInt("question_id");
+
+            list.add(new Question(
+                    qid,
+                    rs.getString("question_text"),
+                    getOptions(qid),
+                    getCorrectIndex(qid),
+                    difficulty
+            ));
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return list;
+}
 }

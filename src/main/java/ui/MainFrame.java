@@ -143,6 +143,11 @@ private JPanel createQuizPage() {
 
     JScrollPane scrollPane = new JScrollPane(questionsPanel);
 
+    JButton backBtn = new JButton("← Back");
+    backBtn.addActionListener(e ->
+        cardLayout.show(mainPanel, "UPLOAD")
+    );
+
     JButton submitBtn = new JButton("Submit Quiz");
 
     submitBtn.addActionListener(e -> {
@@ -181,6 +186,7 @@ private JPanel createQuizPage() {
         cardLayout.show(mainPanel, "UPLOAD");
     });
 
+    panel.add(backBtn, BorderLayout.NORTH);
     panel.add(scrollPane, BorderLayout.CENTER);
     panel.add(submitBtn, BorderLayout.SOUTH);
 
@@ -265,10 +271,11 @@ private void loadQuizQuestions() {
         }
 
         String result = service.generate(
-            lectureArea.getText(),
-            typeBox.getSelectedItem().toString(),
-            difficultyBox.getSelectedItem().toString()
-        );
+    lectureArea.getText(),
+    typeBox.getSelectedItem().toString(),
+    difficultyBox.getSelectedItem().toString(),
+    selectedFile != null
+     );
 
         outputArea.setText(result);
 
