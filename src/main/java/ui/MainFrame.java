@@ -14,9 +14,6 @@ import java.util.Enumeration;
 
 public class MainFrame extends JFrame {
 
-   /*private JTextArea lectureArea, outputArea;
-    private JComboBox<String> typeBox, difficultyBox;
-    private File selectedFile;*/
     private CardLayout cardLayout;
     private JPanel mainPanel;
 
@@ -42,12 +39,7 @@ public class MainFrame extends JFrame {
         setSize(800, 600);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        /*setLayout(new BorderLayout());
-
-        setIconImage(new ImageIcon("resources/icon.png").getImage());
-
-        add(createTopPanel(), BorderLayout.NORTH);
-        add(createCenterPanel(), BorderLayout.CENTER);*/
+     
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
 

@@ -33,7 +33,7 @@ public class FileUtils {
         }
     }
 
-    // ---------- PDF ----------
+    //  PDF 
     private static String readPdf(File file) throws IOException {
         try (PDDocument doc = PDDocument.load(file)) {
             PDFTextStripper stripper = new PDFTextStripper();
@@ -41,7 +41,7 @@ public class FileUtils {
         }
     }
 
-    // ---------- DOC ----------
+    //  DOC 
     private static String readDoc(File file) throws IOException {
         try (FileInputStream fis = new FileInputStream(file)) {
             HWPFDocument doc = new HWPFDocument(fis);
@@ -50,7 +50,7 @@ public class FileUtils {
         }
     }
 
-    // ---------- DOCX ----------
+    // DOCX 
     private static String readDocx(File file) throws IOException {
         try (FileInputStream fis = new FileInputStream(file);
              XWPFDocument doc = new XWPFDocument(fis)) {

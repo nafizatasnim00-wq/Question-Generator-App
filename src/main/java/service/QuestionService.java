@@ -4,8 +4,8 @@ import dao.QuestionDAO;
 import model.Question;
 
 import java.util.List;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class QuestionService {
 
@@ -35,27 +35,30 @@ public class QuestionService {
 
         foundInDB = true;
 
-        // ---------- MCQ FROM DB ----------
+        //  MCQ FROM DB
         if (type.equals("MCQ")) {
 
             List<Question> questions =
-                    dao.getMCQQuestions(key, difficulty, 5);
+        dao.getMCQQuestions(key, difficulty, 5);
 
-            for (Question q : questions) {
+       for (Question q : questions) {
 
-                sb.append(qNo++).append(". ")
-                  .append(q.getText()).append("\n");
+    // Shuffle MCQ options safely
+    Question shuffled = shuffleOptions(q);
 
-                char optionLabel = 'a';
-                for (String opt : q.getOptions()) {
-                    sb.append("   ")
-                      .append(optionLabel++).append(") ")
-                      .append(opt).append("\n");
-                }
-                sb.append("\n");
-            }
+    sb.append(qNo++).append(". ")
+      .append(shuffled.getText()).append("\n");
+
+    char optionLabel = 'a';
+    for (String opt : shuffled.getOptions()) {
+        sb.append("   ")
+          .append(optionLabel++).append(") ")
+          .append(opt).append("\n");
+    }
+    sb.append("\n");
+}
         }
-        // ---------- NON-MCQ ----------
+        //  NON-MCQ 
         else {
             List<String> qs =
                     dao.getQuestionTexts(key, difficulty, 5);
@@ -67,11 +70,28 @@ public class QuestionService {
         }
     }
 
-    // ---------- FALLBACK ----------
+    //  FALLBACK 
     if (!foundInDB) {
         return QuestionGenerator.generate(text, type, difficulty);
     }
 
     return sb.toString();
+}
+private Question shuffleOptions(Question q) {
+
+    List<String> opts = new ArrayList<>(q.getOptions());
+    String correctAnswer = opts.get(q.getCorrectIndex());
+
+    Collections.shuffle(opts);
+
+    int newCorrectIndex = opts.indexOf(correctAnswer);
+
+    return new Question(
+            q.getId(),
+            q.getText(),
+            opts,
+            newCorrectIndex,
+            q.getDifficulty()
+    );
 }
 }

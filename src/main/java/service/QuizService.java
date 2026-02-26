@@ -1,6 +1,7 @@
 package service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import model.Question;
 import dao.QuestionDAO;
@@ -15,16 +16,22 @@ public List<Question> createQuiz(
     QuestionDAO dao = new QuestionDAO();
     List<Question> finalQuiz = new ArrayList<>();
 
-    // No file → DB quiz directly
+    //  NO FILE 
     if (!fileUploaded) {
-        return dao.getQuestions(text, difficulty, 5);
+
+        List<Question> dbQs =
+                dao.getQuestions(text, difficulty, 5);
+
+        for (Question q : dbQs) {
+            finalQuiz.add(shuffleOptions(q)); // 🔀 SHUFFLE
+        }
+        return finalQuiz;
     }
 
-    // File uploaded → extract ALL keywords
+    //  FILE UPLOADED 
     List<String> keywords =
             QuestionGenerator.extractKeywords(text);
 
-    // For EACH keyword, try DB match
     for (String key : keywords) {
 
         if (dao.topicExists(key)) {
@@ -32,21 +39,32 @@ public List<Question> createQuiz(
             List<Question> dbQuestions =
                     dao.getQuestions(key, difficulty, 5);
 
-            finalQuiz.addAll(dbQuestions);
+            for (Question q : dbQuestions) {
+                finalQuiz.add(shuffleOptions(q)); // 🔀 SHUFFLE
+            }
         }
     }
 
-    // If at least ONE DB topic matched → return DB quiz
+    //  DB MATCH FOUND 
     if (!finalQuiz.isEmpty()) {
         return finalQuiz;
     }
 
-    // Otherwise → fallback to logic-based quiz
-    return QuestionGenerator.generateQuiz(
-            text,
-            difficulty,
-            new DBOptionProvider()
-    );
+    //  FALLBACK 
+    List<Question> generated =
+            QuestionGenerator.generateQuiz(
+                    text,
+                    difficulty,
+                    new DBOptionProvider()
+            );
+
+    // Shuffle fallback MCQs also
+    List<Question> shuffledFallback = new ArrayList<>();
+    for (Question q : generated) {
+        shuffledFallback.add(shuffleOptions(q));
+    }
+
+    return shuffledFallback;
 }
 
 
@@ -61,4 +79,21 @@ public List<Question> createQuiz(
         }
         return score;
     }
+    private Question shuffleOptions(Question q) {
+
+    List<String> options = new ArrayList<>(q.getOptions());
+    String correctAnswer = options.get(q.getCorrectIndex());
+
+    Collections.shuffle(options);
+
+    int newCorrectIndex = options.indexOf(correctAnswer);
+
+    return new Question(
+            q.getId(),
+            q.getText(),
+            options,
+            newCorrectIndex,
+            q.getDifficulty()
+    );
+}
 }

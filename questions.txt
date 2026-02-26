@@ -1,23 +1,27 @@
-Question Type: Short
+Question Type: MCQ
 Difficulty: Easy
 
-1. What is encapsulation in OOP?
+1. What is polymorphism in OOP ?
+   a) Creating multiple classes
+   b) Binding data and methods together
+   c) Process of hiding data
+   d) Ability of an object to take multiple forms
 
-2. How does encapsulation improve security?
+2. What the main two types of polymorphism?
+   a) Static and Dynamic memory allocation
+   b) Abstraction and Encapsulation
+   c) Single and Multiple inheritance
+   d) Compile-time and Runtime polymorphism
 
-3. Explain data hiding.
+3. How does method overloading support polymorphism?
+   a) Same method name with same parameters
+   b) Different method names with same parameters
+   c) Same return type only
+   d) Same method name with different parameter lists
 
-4. What is inheritance in OOP?
-
-5. What are the advantages of inheritance?
-
-6. Explain single inheritance.
-
-7. What is polymorphism in OOP ?
-
-8. What the main two types of polymorphism?
-
-9. How does method overloading support polymorphism?
-
-10. Why is polymorphism important in OOP?
+4. Why is polymorphism important in OOP?
+   a) It removes inheritance
+   b) It reduces memory usage
+   c) It increases code flexibility and reusability
+   d) It prevents method overriding
 
