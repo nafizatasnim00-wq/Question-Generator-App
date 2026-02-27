@@ -1,7 +1,6 @@
 package service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import model.Question;
 import dao.QuestionDAO;
@@ -19,13 +18,7 @@ public List<Question> createQuiz(
     //  NO FILE 
     if (!fileUploaded) {
 
-        List<Question> dbQs =
-                dao.getQuestions(text, difficulty, 5);
-
-        for (Question q : dbQs) {
-            finalQuiz.add(shuffleOptions(q)); // 🔀 SHUFFLE
-        }
-        return finalQuiz;
+        return dao.getQuestions(text, difficulty, 5);
     }
 
     //  FILE UPLOADED 
@@ -39,9 +32,7 @@ public List<Question> createQuiz(
             List<Question> dbQuestions =
                     dao.getQuestions(key, difficulty, 5);
 
-            for (Question q : dbQuestions) {
-                finalQuiz.add(shuffleOptions(q)); // 🔀 SHUFFLE
-            }
+            finalQuiz.addAll(dbQuestions);
         }
     }
 
@@ -50,22 +41,12 @@ public List<Question> createQuiz(
         return finalQuiz;
     }
 
-    //  FALLBACK 
-    List<Question> generated =
-            QuestionGenerator.generateQuiz(
-                    text,
-                    difficulty,
-                    new DBOptionProvider()
-            );
-
-    // Shuffle fallback MCQs also
-    List<Question> shuffledFallback = new ArrayList<>();
-    for (Question q : generated) {
-        shuffledFallback.add(shuffleOptions(q));
+    return QuestionGenerator.generateQuiz(
+            text,
+            difficulty,
+            new DBOptionProvider()
+        );
     }
-
-    return shuffledFallback;
-}
 
 
 
@@ -79,21 +60,5 @@ public List<Question> createQuiz(
         }
         return score;
     }
-    private Question shuffleOptions(Question q) {
-
-    List<String> options = new ArrayList<>(q.getOptions());
-    String correctAnswer = options.get(q.getCorrectIndex());
-
-    Collections.shuffle(options);
-
-    int newCorrectIndex = options.indexOf(correctAnswer);
-
-    return new Question(
-            q.getId(),
-            q.getText(),
-            options,
-            newCorrectIndex,
-            q.getDifficulty()
-    );
-}
+    
 }

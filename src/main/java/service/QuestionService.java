@@ -4,8 +4,6 @@ import dao.QuestionDAO;
 import model.Question;
 
 import java.util.List;
-import java.util.ArrayList;
-import java.util.Collections;
 
 public class QuestionService {
 
@@ -43,21 +41,20 @@ public class QuestionService {
 
        for (Question q : questions) {
 
-    // Shuffle MCQ options safely
-    Question shuffled = shuffleOptions(q);
-
     sb.append(qNo++).append(". ")
-      .append(shuffled.getText()).append("\n");
+                  .append(q.getText()).append("\n");
 
-    char optionLabel = 'a';
-    for (String opt : shuffled.getOptions()) {
-        sb.append("   ")
-          .append(optionLabel++).append(") ")
-          .append(opt).append("\n");
-    }
+     char optionLabel = 'a';
+                for (String opt : q.getOptions()) {
+                    sb.append("   ")
+                      .append(optionLabel++).append(") ")
+                      .append(opt).append("\n");
+                }
+                sb.append("\n");
+            }
     sb.append("\n");
-}
         }
+        
         //  NON-MCQ 
         else {
             List<String> qs =
@@ -76,22 +73,5 @@ public class QuestionService {
     }
 
     return sb.toString();
-}
-private Question shuffleOptions(Question q) {
-
-    List<String> opts = new ArrayList<>(q.getOptions());
-    String correctAnswer = opts.get(q.getCorrectIndex());
-
-    Collections.shuffle(opts);
-
-    int newCorrectIndex = opts.indexOf(correctAnswer);
-
-    return new Question(
-            q.getId(),
-            q.getText(),
-            opts,
-            newCorrectIndex,
-            q.getDifficulty()
-    );
 }
 }

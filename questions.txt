@@ -2,26 +2,27 @@ Question Type: MCQ
 Difficulty: Easy
 
 1. What is polymorphism in OOP ?
-   a) Creating multiple classes
-   b) Binding data and methods together
-   c) Process of hiding data
-   d) Ability of an object to take multiple forms
+   a) Ability of an object to take multiple forms
+   b) Process of hiding data
+   c) Binding data and methods together
+   d) Creating multiple classes
 
 2. What the main two types of polymorphism?
-   a) Static and Dynamic memory allocation
-   b) Abstraction and Encapsulation
+   a) Compile-time and Runtime polymorphism
+   b) Static and Dynamic memory allocation
    c) Single and Multiple inheritance
-   d) Compile-time and Runtime polymorphism
+   d) Abstraction and Encapsulation
 
 3. How does method overloading support polymorphism?
-   a) Same method name with same parameters
-   b) Different method names with same parameters
-   c) Same return type only
-   d) Same method name with different parameter lists
+   a) Same method name with different parameter lists
+   b) Same method name with same parameters
+   c) Different method names with same parameters
+   d) Same return type only
 
 4. Why is polymorphism important in OOP?
-   a) It removes inheritance
+   a) It increases code flexibility and reusability
    b) It reduces memory usage
-   c) It increases code flexibility and reusability
+   c) It removes inheritance
    d) It prevents method overriding
+
 
