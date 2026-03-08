@@ -23,7 +23,7 @@ public List<Question> createQuiz(
 
     //  FILE UPLOADED 
     List<String> keywords =
-            QuestionGenerator.extractKeywords(text);
+            KeywordExtractor.extractKeywords(text);
 
     for (String key : keywords) {
 

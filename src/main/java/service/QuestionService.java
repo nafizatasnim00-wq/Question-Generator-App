@@ -24,7 +24,7 @@ public class QuestionService {
     int qNo = 1;
 
     List<String> keywords = fileUploaded
-            ? QuestionGenerator.extractKeywords(text)
+            ? KeywordExtractor.extractKeywords(text)
             : List.of(text.trim());
 
     for (String key : keywords) {
