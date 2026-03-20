@@ -180,4 +180,20 @@ public List<Question> getMCQQuestions(
 
     return list;
 }
+ // fetch all topic names for use in UI dropdowns
+    public List<String> getAllTopics() {
+        List<String> topics = new ArrayList<>();
+        String sql = "SELECT topic_name FROM topics ORDER BY topic_name";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                topics.add(rs.getString("topic_name"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return topics;
+    }
+
 }
