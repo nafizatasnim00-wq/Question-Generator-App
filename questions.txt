@@ -1,33 +1,82 @@
 Question Type: MCQ
 Difficulty: Easy
 
-1. What is binary tree?
-a) Option 1
-b) Option 2
-c) Option 3
-d) Option 4
+Topic: Encapsulation
 
-2. Which of the following relates to insertion sort?
-a) Option 1
-b) Option 2
-c) Option 3
-d) Option 4
+1. What is encapsulation in OOP?
+   a) Bundling data and methods, hiding internal details
+   b) Inheriting from parent class
+   c) Creating abstract methods
+   d) Implementing interfaces
+   Correct answer: a
 
-3. Which of the following relates to complete binary tree?
-a) Option 1
-b) Option 2
-c) Option 3
-d) Option 4
+2. How does encapsulation improve security?
+   a) By making all members public
+   b) By removing methods from classes
+   c) By using multiple inheritance
+   d) By restricting access to sensitive data through private members
+   Correct answer: d
 
-4. Which statement best describes nodes?
-a) Option 1
-b) Option 2
-c) Option 3
-d) Option 4
+3. Explain data hiding.
+   a) Displaying all class members publicly
+   b) Keeping internal implementation hidden from outside world
+   c) Removing private keywords
+   d) Making all attributes public
+   Correct answer: b
 
-5. Which statement best describes selection sort?
-a) Option 1
-b) Option 2
-c) Option 3
-d) Option 4
+
+Topic: Inheritance
+
+4. What is inheritance in OOP?
+   a) Process of hiding data
+   b) Binding data and methods
+   c) Mechanism to acquire properties and methods from parent class
+   d) Creating new classes
+   Correct answer: c
+
+5. What are the advantages of inheritance?
+   a) Code reusability and reduced redundancy
+   b) Increased memory usage
+   c) Faster execution time
+   d) More complex code
+   Correct answer: a
+
+6. Explain single inheritance.
+   a) A class inherits from multiple classes
+   b) A class inherits from one parent class
+   c) A class is inherited by multiple classes
+   d) Classes inherit methods from interfaces
+   Correct answer: b
+
+
+Topic: Polymorphism
+
+7. What is polymorphism in OOP ?
+   a) Ability of an object to take multiple forms
+   b) Process of hiding data
+   c) Binding data and methods together
+   d) Creating multiple classes
+   Correct answer: a
+
+8. What the main two types of polymorphism?
+   a) Compile-time and Runtime polymorphism
+   b) Static and Dynamic memory allocation
+   c) Single and Multiple inheritance
+   d) Abstraction and Encapsulation
+   Correct answer: a
+
+9. How does method overloading support polymorphism?
+   a) Same method name with different parameter lists
+   b) Same method name with same parameters
+   c) Different method names with same parameters
+   d) Same return type only
+   Correct answer: a
+
+10. Why is polymorphism important in OOP?
+   a) It increases code flexibility and reusability
+   b) It reduces memory usage
+   c) It removes inheritance
+   d) It prevents method overriding
+   Correct answer: a
+
 

@@ -118,4 +118,11 @@ public class FileUtils {
         list.sort((a, b) -> a.getName().compareToIgnoreCase(b.getName()));
         return list;
     }
+    // Add this new method to FileUtils.java
+    public static boolean deleteUploadedFile(File file) {
+       if (file != null && file.exists()) {
+          return file.delete();
+      }
+      return false;
+    }
 }

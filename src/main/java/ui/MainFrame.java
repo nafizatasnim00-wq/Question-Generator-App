@@ -42,7 +42,8 @@ public class MainFrame extends JFrame {
     private JComboBox<String> typeBox, difficultyBox, topicBox;
 
     // Code 2 Feature: Saved uploaded files combo
-    private JComboBox<String> savedFilesCombo;
+    private JPanel savedFilesPanel;   // scrollable list of file entries
+    private JScrollPane savedFilesScrollPane;
 
     private File selectedFile;
     private List<Question> quizQuestions;
@@ -100,7 +101,11 @@ public class MainFrame extends JFrame {
         if (typeBox       != null) { typeBox      .setBackground(darkMode ? new Color(70,70,70) : Color.WHITE); typeBox      .setForeground(textFg); }
         if (difficultyBox != null) { difficultyBox.setBackground(darkMode ? new Color(70,70,70) : Color.WHITE); difficultyBox.setForeground(textFg); }
         if (topicBox      != null) { topicBox     .setBackground(darkMode ? new Color(70,70,70) : Color.WHITE); topicBox     .setForeground(textFg); }
-        if (savedFilesCombo != null) { savedFilesCombo.setBackground(darkMode ? new Color(70,70,70) : Color.WHITE); savedFilesCombo.setForeground(textFg); }
+        if (savedFilesPanel != null) {
+         savedFilesPanel.setBackground(darkMode ? new Color(50, 50, 50) : new Color(240, 240, 240));
+    // Refresh entries so each row picks up new theme colors
+         refreshSavedFiles();
+        }
 
         if (darkModeToggle  != null) {
             darkModeToggle.setBackground(new Color(74, 144, 226));
@@ -215,12 +220,17 @@ public class MainFrame extends JFrame {
         // Code 2 Feature: Saved uploaded files section
         JLabel lblSavedFiles = new JLabel("Uploaded Files:");
         lblSavedFiles.setForeground(darkMode ? Color.WHITE : Color.BLACK);
-        savedFilesCombo = new JComboBox<>();
-        savedFilesCombo.setMaximumSize(new Dimension(Integer.MAX_VALUE, 35));
 
-        JButton loadFileBtn = new JButton("Load Selected File");
-        styleButton(loadFileBtn, new Color(74, 144, 226));
-        loadFileBtn.addActionListener(e -> loadSelectedUploadedFile());
+       // Scrollable panel to hold file entries
+        savedFilesPanel = new JPanel();
+        savedFilesPanel.setLayout(new BoxLayout(savedFilesPanel, BoxLayout.Y_AXIS));
+        savedFilesPanel.setBackground(darkMode ? new Color(50, 50, 50) : new Color(240, 240, 240)); 
+
+        savedFilesScrollPane = new JScrollPane(savedFilesPanel); 
+        savedFilesScrollPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, 160));
+        savedFilesScrollPane.setPreferredSize(new Dimension(Integer.MAX_VALUE, 160));
+        savedFilesScrollPane.setBorder(BorderFactory.createLineBorder(new Color(100, 100, 100), 1));
+        savedFilesScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
         // Code 2 Feature: Save lecture as file button
         JButton saveLectureBtn = new JButton("Save Lecture As...");
@@ -275,9 +285,8 @@ public class MainFrame extends JFrame {
         sidebar.add(topicBox);
         sidebar.add(Box.createRigidArea(new Dimension(0, 15)));
         sidebar.add(lblSavedFiles);
-        sidebar.add(savedFilesCombo);
-        sidebar.add(Box.createRigidArea(new Dimension(0, 10)));
-        sidebar.add(loadFileBtn);
+        sidebar.add(Box.createRigidArea(new Dimension(0, 5)));
+        sidebar.add(savedFilesScrollPane);
         sidebar.add(Box.createRigidArea(new Dimension(0, 10)));
         sidebar.add(saveLectureBtn);
         sidebar.add(Box.createVerticalGlue());
@@ -598,7 +607,7 @@ public class MainFrame extends JFrame {
                 File saved = FileUtils.copyToUploadDir(selectedFile);
                 selectedFile = saved;
                 refreshSavedFiles();
-                savedFilesCombo.setSelectedItem(saved.getName());
+                
                 if (topicBox != null) topicBox.setSelectedIndex(-1);
 
             } catch (IOException ex) {
@@ -622,34 +631,126 @@ public class MainFrame extends JFrame {
 
     // Code 2 Feature: Refresh saved files dropdown from upload directory
     private void refreshSavedFiles() {
-        if (savedFilesCombo == null) return;
-        savedFilesCombo.removeAllItems();
-        List<File> files = FileUtils.listUploadFiles();
-        for (File f : files) savedFilesCombo.addItem(f.getName());
-        if (savedFilesCombo.getItemCount() > 0) savedFilesCombo.setSelectedIndex(0);
+    if (savedFilesPanel == null) return;
+
+    savedFilesPanel.removeAll();
+
+    List<File> files = FileUtils.listUploadFiles();
+
+    if (files.isEmpty()) {
+        JLabel emptyLbl = new JLabel("No uploaded files.");
+        emptyLbl.setForeground(Color.GRAY);
+        emptyLbl.setFont(new Font("SansSerif", Font.ITALIC, 11));
+        emptyLbl.setBorder(new EmptyBorder(5, 8, 5, 8));
+        savedFilesPanel.add(emptyLbl);
     }
 
-    // Code 2 Feature: Load a previously saved uploaded file
-    private void loadSelectedUploadedFile() {
-        if (savedFilesCombo == null || savedFilesCombo.getSelectedItem() == null) {
-            showError("No uploaded file selected.");
-            return;
-        }
-        String filename = savedFilesCombo.getSelectedItem().toString();
-        File stored = new File(FileUtils.getUploadDir(), filename);
-        if (!stored.exists()) {
-            showError("Selected uploaded file no longer exists.");
-            refreshSavedFiles();
-            return;
-        }
-        try {
-            lectureArea.setText(FileUtils.readFile(stored));
-            selectedFile = stored;
-            if (topicBox != null) topicBox.setSelectedIndex(-1);
-        } catch (Exception ex) {
-            showError("Failed to load selected uploaded file.");
-        }
+    for (File file : files) {
+        savedFilesPanel.add(createFileEntry(file));
     }
+
+    savedFilesPanel.revalidate();
+    savedFilesPanel.repaint();
+  }
+
+  private JPanel createFileEntry(File file) {
+    JPanel entry = new JPanel(new BorderLayout(4, 0));
+    entry.setMaximumSize(new Dimension(Integer.MAX_VALUE, 36));
+    entry.setPreferredSize(new Dimension(300, 36)); // Give it a base preferred width so scroll kicks in
+    entry.setBorder(new EmptyBorder(3, 6, 3, 6));
+    entry.setBackground(darkMode ? new Color(55, 55, 55) : new Color(235, 235, 235));
+
+    // File name label — click to load
+    JLabel nameLabel = new JLabel(file.getName());
+    nameLabel.setFont(new Font("SansSerif", Font.PLAIN, 11));
+    nameLabel.setPreferredSize(null); // Let label grow naturally instead of truncating
+    nameLabel.setForeground(darkMode ? Color.WHITE : Color.BLACK);
+    nameLabel.setToolTipText(file.getAbsolutePath());
+    nameLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+    nameLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+        @Override
+        public void mouseClicked(java.awt.event.MouseEvent e) {
+            loadFileIntoEditor(file);
+        }
+    });
+
+    // Right-side button panel
+    JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 2, 0));
+    btnPanel.setOpaque(false);
+
+    // × Unlink button — removes entry from panel without deleting file
+    JButton unlinkBtn = new JButton("×");
+    unlinkBtn.setToolTipText("Remove from list (keeps file on PC)");
+    unlinkBtn.setFont(new Font("SansSerif", Font.BOLD, 12));
+    unlinkBtn.setForeground(Color.ORANGE);
+    unlinkBtn.setBackground(darkMode ? new Color(70, 70, 70) : new Color(220, 220, 220));
+    unlinkBtn.setBorder(BorderFactory.createEmptyBorder(1, 6, 1, 6));
+    unlinkBtn.setFocusPainted(false);
+    unlinkBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+    unlinkBtn.addActionListener(e -> {
+        // Only removes from the panel view, file stays on disk
+        savedFilesPanel.remove(entry);
+        savedFilesPanel.revalidate();
+        savedFilesPanel.repaint();
+    });
+
+    // 🗑 Delete button — permanently deletes file from PC
+    JButton deleteBtn = new JButton("🗑");
+    deleteBtn.setToolTipText("Permanently delete file from PC");
+    deleteBtn.setFont(new Font("SansSerif", Font.PLAIN, 11));
+    deleteBtn.setForeground(Color.RED);
+    deleteBtn.setBackground(darkMode ? new Color(70, 70, 70) : new Color(220, 220, 220));
+    deleteBtn.setBorder(BorderFactory.createEmptyBorder(1, 6, 1, 6));
+    deleteBtn.setFocusPainted(false);
+    deleteBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+    deleteBtn.addActionListener(e -> {
+        int confirm = JOptionPane.showConfirmDialog(
+            this,
+            "Permanently delete \"" + file.getName() + "\" from your PC?",
+            "Confirm Delete",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE
+        );
+        if (confirm == JOptionPane.YES_OPTION) {
+            boolean deleted = FileUtils.deleteUploadedFile(file);
+            if (deleted) {
+                // Clear editor if this file was loaded
+                if (selectedFile != null &&
+                    selectedFile.getAbsolutePath().equals(file.getAbsolutePath())) {
+                    lectureArea.setText("");
+                    selectedFile = null;
+                }
+                refreshSavedFiles();
+            } else {
+                showError("Could not delete file. It may be in use.");
+            }
+        }
+    });
+
+    btnPanel.add(unlinkBtn);
+    btnPanel.add(deleteBtn);
+
+    entry.add(nameLabel, BorderLayout.CENTER);
+    entry.add(btnPanel,  BorderLayout.EAST);
+
+    return entry;
+}
+
+    // Code 2 Feature: Load a previously saved uploaded file
+    private void loadFileIntoEditor(File file) {
+    if (!file.exists()) {
+        showError("File no longer exists on disk.");
+        refreshSavedFiles();
+        return;
+    }
+    try {
+        lectureArea.setText(FileUtils.readFile(file));
+        selectedFile = file;
+        if (topicBox != null) topicBox.setSelectedIndex(-1);
+    } catch (Exception ex) {
+        showError("Failed to load file: " + file.getName());
+    }
+}
 
     // Code 2 Feature: Save typed/pasted lecture content as a named file
     private void saveLectureAsFile() {
@@ -680,7 +781,6 @@ public class MainFrame extends JFrame {
             FileUtils.writeFile(target.getAbsolutePath(), content);
             selectedFile = target;
             refreshSavedFiles();
-            savedFilesCombo.setSelectedItem(target.getName());
             JOptionPane.showMessageDialog(this, "Saved lecture as " + target.getName(), "Saved", JOptionPane.INFORMATION_MESSAGE);
         } catch (Exception ex) {
             showError("Failed to save lecture to file.");
