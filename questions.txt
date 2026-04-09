@@ -1,23 +1,33 @@
-Question Type: Short
+Question Type: MCQ
 Difficulty: Easy
 
-1. What is encapsulation in OOP?
+1. What is binary tree?
+a) Option 1
+b) Option 2
+c) Option 3
+d) Option 4
 
-2. How does encapsulation improve security?
+2. Which of the following relates to insertion sort?
+a) Option 1
+b) Option 2
+c) Option 3
+d) Option 4
 
-3. Explain data hiding.
+3. Which of the following relates to complete binary tree?
+a) Option 1
+b) Option 2
+c) Option 3
+d) Option 4
 
-4. What is inheritance in OOP?
+4. Which statement best describes nodes?
+a) Option 1
+b) Option 2
+c) Option 3
+d) Option 4
 
-5. What are the advantages of inheritance?
-
-6. Explain single inheritance.
-
-7. What is polymorphism in OOP ?
-
-8. What the main two types of polymorphism?
-
-9. How does method overloading support polymorphism?
-
-10. Why is polymorphism important in OOP?
+5. Which statement best describes selection sort?
+a) Option 1
+b) Option 2
+c) Option 3
+d) Option 4
 
