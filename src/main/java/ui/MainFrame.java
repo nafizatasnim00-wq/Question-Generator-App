@@ -17,10 +17,10 @@ import java.util.Enumeration;
 
 public class MainFrame extends JFrame {
 
-    // ─────────────────────────────────────────────
+   
     // Fields
-    // ─────────────────────────────────────────────
 
+    private JTabbedPane tabbedPane;
     private CardLayout cardLayout;
     private JPanel contentPanel;
     private JPanel sidebarPanel;
@@ -29,11 +29,11 @@ public class MainFrame extends JFrame {
     private JPanel quizPanel;
     private JPanel topPanel;
 
-    // Code 2 Feature: Dark/light mode toggle state
+    // Dark/light mode toggle state
     private JToggleButton darkModeToggle;
     private boolean darkMode = false;
 
-    // Code 2 Feature: Class-level label references for dynamic theming
+    // Class-level label references for dynamic theming
     private JLabel lblType, lblDiff, lblTopic;
     private JLabel lblHeaderUpload, lblHeaderResult;
     private JLabel lblQuizTimer;
@@ -41,7 +41,7 @@ public class MainFrame extends JFrame {
     private JTextArea lectureArea, outputArea;
     private JComboBox<String> typeBox, difficultyBox, topicBox;
 
-    // Code 2 Feature: Saved uploaded files combo
+    //  Saved uploaded files combo
     private JPanel savedFilesPanel;   // scrollable list of file entries
     private JScrollPane savedFilesScrollPane;
 
@@ -49,16 +49,15 @@ public class MainFrame extends JFrame {
     private List<Question> quizQuestions;
     private List<Integer> userAnswers = new ArrayList<>();
 
-    // Code 2 Feature: Quiz timer fields
+    // Quiz timer fields
     private int remainingSeconds;
     private Timer quizTimer;
 
     private final QuizService quizService = new QuizService();
     private final QuestionService service = new QuestionService();
 
-    // ─────────────────────────────────────────────
+    
     // Constructor
-    // ─────────────────────────────────────────────
 
     public MainFrame() {
         setupTheme();
@@ -66,13 +65,12 @@ public class MainFrame extends JFrame {
         setVisible(true);
     }
 
-    // ─────────────────────────────────────────────
+   
     // Theme Setup
-    // ─────────────────────────────────────────────
 
     private void setupTheme() {
         try {
-            // Code 2 Feature: Start with light mode by default
+            // light mode by default
             UIManager.setLookAndFeel(new FlatLightLaf());
             UIManager.put("Button.arc", 10);
             UIManager.put("Component.arc", 10);
@@ -82,7 +80,6 @@ public class MainFrame extends JFrame {
         }
     }
 
-    // Code 2 Feature: Dynamically re-color all components on theme toggle
     private void applyTheme() {
         Color mainBg  = darkMode ? new Color(43, 43, 43)  : Color.WHITE;
         Color panelBg = darkMode ? new Color(60, 63, 65)  : new Color(245, 245, 245);
@@ -106,6 +103,10 @@ public class MainFrame extends JFrame {
     // Refresh entries so each row picks up new theme colors
          refreshSavedFiles();
         }
+        if (tabbedPane != null) {
+           tabbedPane.setBackground(darkMode ? new Color(43, 43, 43) : new Color(245, 245, 245));
+           tabbedPane.setForeground(darkMode ? Color.WHITE : Color.BLACK);
+           }
 
         if (darkModeToggle  != null) {
             darkModeToggle.setBackground(new Color(74, 144, 226));
@@ -122,9 +123,9 @@ public class MainFrame extends JFrame {
         if (lblQuizTimer    != null) lblQuizTimer   .setForeground(textFg);
     }
 
-    // ─────────────────────────────────────────────
+    
     // UI Initialization
-    // ─────────────────────────────────────────────
+   
 
     private void initUI() {
         setTitle("Smart Question Generator");
@@ -134,33 +135,43 @@ public class MainFrame extends JFrame {
 
         JPanel mainPanel = new JPanel(new BorderLayout());
 
-        // Code 2 Feature: Top bar with theme toggle
+        // Top bar
         topPanel    = createTopBar();
         sidebarPanel = createSidebar();
 
+        uploadPanel = createUploadPage();
+        resultPanel = createResultPage();
+        quizPanel   = createQuizPage();
+
+       // Tabs for Lecture and Results
+        tabbedPane = new JTabbedPane();
+        tabbedPane.setFont(new Font("SansSerif", Font.BOLD, 13));
+        tabbedPane.setTabPlacement(JTabbedPane.TOP);
+        UIManager.put("TabbedPane.tabInsets", new Insets(6, 16, 6, 16));
+        tabbedPane.addTab("📄 Lecture Content",     uploadPanel);
+        tabbedPane.addTab("📝 Generated Questions", resultPanel);
+
+       // Disable results tab until questions are generated
+        tabbedPane.setEnabledAt(1, false);
+
+       // CardLayout wraps the tabbed view AND the quiz page
         contentPanel = new JPanel(cardLayout = new CardLayout());
-        uploadPanel  = createUploadPage();
-        resultPanel  = createResultPage();
-        quizPanel    = createQuizPage();
+        contentPanel.add(tabbedPane, "TABS");
+        contentPanel.add(quizPanel,  "QUIZ");
 
-        contentPanel.add(uploadPanel, "UPLOAD");
-        contentPanel.add(resultPanel, "RESULT");
-        contentPanel.add(quizPanel,   "QUIZ");
-
-        mainPanel.add(topPanel,    BorderLayout.NORTH);
-        mainPanel.add(sidebarPanel, BorderLayout.WEST);
-        mainPanel.add(contentPanel, BorderLayout.CENTER);
+        mainPanel.add(topPanel,      BorderLayout.NORTH);
+        mainPanel.add(sidebarPanel,  BorderLayout.WEST);
+        mainPanel.add(contentPanel,  BorderLayout.CENTER);
 
         add(mainPanel);
 
-        // Code 2 Feature: Populate saved files on startup
         refreshSavedFiles();
         applyTheme();
     }
 
-    // ─────────────────────────────────────────────
+  
     // Top Bar (Code 2 Feature)
-    // ─────────────────────────────────────────────
+   
 
     private JPanel createTopBar() {
         JPanel top = new JPanel(new BorderLayout());
@@ -177,9 +188,9 @@ public class MainFrame extends JFrame {
         return top;
     }
 
-    // ─────────────────────────────────────────────
+    
     // Sidebar
-    // ─────────────────────────────────────────────
+  
 
     private JPanel createSidebar() {
         JPanel sidebar = new JPanel();
@@ -217,7 +228,7 @@ public class MainFrame extends JFrame {
             if (sel != null) lectureArea.setText(sel);
         });
 
-        // Code 2 Feature: Saved uploaded files section
+        // Saved uploaded files section
         JLabel lblSavedFiles = new JLabel("Uploaded Files:");
         lblSavedFiles.setForeground(darkMode ? Color.WHITE : Color.BLACK);
 
@@ -232,7 +243,7 @@ public class MainFrame extends JFrame {
         savedFilesScrollPane.setBorder(BorderFactory.createLineBorder(new Color(100, 100, 100), 1));
         savedFilesScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
-        // Code 2 Feature: Save lecture as file button
+        // Save lecture as file button
         JButton saveLectureBtn = new JButton("Save Lecture As...");
         styleButton(saveLectureBtn, new Color(74, 144, 226));
         saveLectureBtn.addActionListener(e -> saveLectureAsFile());
@@ -247,7 +258,7 @@ public class MainFrame extends JFrame {
         JButton quizBtn = new JButton("Start Quiz");
         styleButton(quizBtn, new Color(74, 144, 226));
         quizBtn.addActionListener(e -> {
-            // Code 2 Feature: Only allow quiz for MCQ type
+            // Only allow quiz for MCQ type
             String type = typeBox.getSelectedItem().toString();
             if (!"MCQ".equalsIgnoreCase(type)) {
                 JOptionPane.showMessageDialog(
@@ -267,7 +278,7 @@ public class MainFrame extends JFrame {
             );
             userAnswers.clear();
             loadQuizQuestions();
-            // Code 2 Feature: Start countdown timer when quiz begins
+            // Start countdown timer when quiz begins
             startQuizTimer();
             cardLayout.show(contentPanel, "QUIZ");
         });
@@ -297,9 +308,9 @@ public class MainFrame extends JFrame {
         return sidebar;
     }
 
-    // ─────────────────────────────────────────────
+   
     // Pages
-    // ─────────────────────────────────────────────
+   
 
     private JPanel createUploadPage() {
         JPanel panel = new JPanel(new BorderLayout());
@@ -352,7 +363,7 @@ public class MainFrame extends JFrame {
         backBtn.setPreferredSize(new Dimension(500, 25));
         backBtn.setBackground(new Color(45, 45, 45));
         backBtn.setForeground(Color.WHITE);
-        backBtn.addActionListener(e -> cardLayout.show(contentPanel, "UPLOAD"));
+        backBtn.addActionListener(e -> tabbedPane.setSelectedIndex(0));
 
         panel.add(lblHeaderResult, BorderLayout.NORTH);
         panel.add(scrollPane,      BorderLayout.CENTER);
@@ -373,12 +384,12 @@ public class MainFrame extends JFrame {
         JScrollPane scrollPane = new JScrollPane(questionsPanel);
         scrollPane.setBorder(BorderFactory.createLineBorder(new Color(60, 60, 60), 1));
 
-        // Code 2 Feature: Timer label at the top of quiz page
+        // Timer label at the top of quiz page
         lblQuizTimer = new JLabel("Time remaining: 00:00", SwingConstants.CENTER);
         lblQuizTimer.setFont(new Font("SansSerif", Font.BOLD, 14));
         lblQuizTimer.setForeground(darkMode ? Color.WHITE : Color.BLACK);
 
-        // Code 2 Feature: Restart quiz button
+        // Restart quiz button
         JButton restartBtn = new JButton("Restart Quiz");
         restartBtn.setFont(new Font("SansSerif", Font.BOLD, 13));
         restartBtn.setBackground(new Color(60, 180, 75));
@@ -393,8 +404,9 @@ public class MainFrame extends JFrame {
         backBtn.setFocusPainted(false);
         backBtn.setBorderPainted(false);
         backBtn.addActionListener(e -> {
-            stopQuizTimer();
-            cardLayout.show(contentPanel, "UPLOAD");
+        stopQuizTimer();
+        tabbedPane.setSelectedIndex(0);        // Go back to Lecture tab
+        cardLayout.show(contentPanel, "TABS"); // Show the tabbed view
         });
 
         JButton submitBtn = new JButton("Submit Quiz");
@@ -404,10 +416,10 @@ public class MainFrame extends JFrame {
         submitBtn.putClientProperty("JButton.arc", 20);
         submitBtn.setFocusPainted(false);
         submitBtn.setBorderPainted(false);
-        // Code 2 Feature: Submit delegates to performQuizSubmission
+        // Submit delegates to performQuizSubmission
         submitBtn.addActionListener(e -> performQuizSubmission(false));
 
-        // Code 2 Feature: Three-button centered bar (Back, Restart, Submit)
+        //Three-button centered bar (Back, Restart, Submit)
         JPanel buttonBar = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
         buttonBar.setOpaque(false);
         buttonBar.add(backBtn);
@@ -422,13 +434,13 @@ public class MainFrame extends JFrame {
         return panel;
     }
 
-    // ─────────────────────────────────────────────
+   
     // Quiz Logic
-    // ─────────────────────────────────────────────
+  
 
-    // Code 2 Feature: Centralized quiz submission with force-submit support
+    // Centralized quiz submission with force-submit support
     private void performQuizSubmission(boolean forceSubmit) {
-        JPanel qPanel      = (JPanel) contentPanel.getComponent(2);
+        JPanel qPanel = quizPanel;
         JPanel questionsPanel = (JPanel) qPanel.getClientProperty("questionsPanel");
 
         Component[] blocks  = questionsPanel.getComponents();
@@ -472,14 +484,14 @@ public class MainFrame extends JFrame {
             ? "Time is up! Quiz auto-submitted.\nScore: " + score + "/" + quizQuestions.size()
             : "Quiz Completed!\nScore: "                  + score + "/" + quizQuestions.size();
 
-        // Code 2 Feature: Highlight correct answers after submission
+        // Highlight correct answers after submission
         markCorrectAnswers(questionsPanel);
 
         JOptionPane.showMessageDialog(this, message, "Quiz Result", JOptionPane.INFORMATION_MESSAGE);
         // Stay on quiz page for review; user presses Back or Restart to continue
     }
 
-    // Code 2 Feature: Restart quiz with fresh questions and reset timer
+    // Restart quiz with fresh questions and reset timer
     private void restartQuiz() {
         String topicText = getSelectedTopic();
         if (topicText.isEmpty()) {
@@ -498,7 +510,7 @@ public class MainFrame extends JFrame {
         startQuizTimer();
     }
 
-    // Code 2 Feature: Countdown timer (30s per question)
+    //Countdown timer (30s per question)
     private void startQuizTimer() {
         if (quizTimer != null && quizTimer.isRunning()) quizTimer.stop();
 
@@ -526,7 +538,7 @@ public class MainFrame extends JFrame {
         lblQuizTimer.setText(String.format("Time remaining: %02d:%02d", m, s));
     }
 
-    // Code 2 Feature: Mark correct answers with ✔ and disable options after submit
+    // Mark correct answers with ✔ and disable options after submit
     private void markCorrectAnswers(JPanel questionsPanel) {
         for (Component block : questionsPanel.getComponents()) {
             if (!(block instanceof JPanel)) continue;
@@ -551,7 +563,7 @@ public class MainFrame extends JFrame {
     }
 
     private void loadQuizQuestions() {
-        JPanel qPanel         = (JPanel) contentPanel.getComponent(2);
+        JPanel qPanel = quizPanel;
         JPanel questionsPanel = (JPanel) qPanel.getClientProperty("questionsPanel");
         questionsPanel.removeAll();
 
@@ -587,9 +599,9 @@ public class MainFrame extends JFrame {
         questionsPanel.repaint();
     }
 
-    // ─────────────────────────────────────────────
+  
     // File Handling
-    // ─────────────────────────────────────────────
+   
 
     private void uploadLecture() {
         JFileChooser chooser = new JFileChooser();
@@ -603,7 +615,7 @@ public class MainFrame extends JFrame {
             try {
                 lectureArea.setText(FileUtils.readFile(selectedFile));
 
-                // Code 2 Feature: Persist uploaded file and refresh saved list
+                // Persist uploaded file and refresh saved list
                 File saved = FileUtils.copyToUploadDir(selectedFile);
                 selectedFile = saved;
                 refreshSavedFiles();
@@ -618,7 +630,7 @@ public class MainFrame extends JFrame {
         }
     }
 
-    // Code 2 Feature: Prefer lecture text, fallback to topic combo selection
+    //  Prefer lecture text, fallback to topic combo selection
     private String getSelectedTopic() {
         if (lectureArea != null && !lectureArea.getText().trim().isEmpty()) {
             return lectureArea.getText().trim();
@@ -629,7 +641,7 @@ public class MainFrame extends JFrame {
         return "";
     }
 
-    // Code 2 Feature: Refresh saved files dropdown from upload directory
+    // Refresh saved files dropdown from upload directory
     private void refreshSavedFiles() {
     if (savedFilesPanel == null) return;
 
@@ -682,7 +694,7 @@ public class MainFrame extends JFrame {
     JButton unlinkBtn = new JButton("×");
     unlinkBtn.setToolTipText("Remove from list (keeps file on PC)");
     unlinkBtn.setFont(new Font("SansSerif", Font.BOLD, 12));
-    unlinkBtn.setForeground(Color.ORANGE);
+    unlinkBtn.setForeground(Color.RED);
     unlinkBtn.setBackground(darkMode ? new Color(70, 70, 70) : new Color(220, 220, 220));
     unlinkBtn.setBorder(BorderFactory.createEmptyBorder(1, 6, 1, 6));
     unlinkBtn.setFocusPainted(false);
@@ -698,7 +710,7 @@ public class MainFrame extends JFrame {
     JButton deleteBtn = new JButton("🗑");
     deleteBtn.setToolTipText("Permanently delete file from PC");
     deleteBtn.setFont(new Font("SansSerif", Font.PLAIN, 11));
-    deleteBtn.setForeground(Color.RED);
+    deleteBtn.setForeground(darkMode ? Color.GREEN : Color.BLUE );
     deleteBtn.setBackground(darkMode ? new Color(70, 70, 70) : new Color(220, 220, 220));
     deleteBtn.setBorder(BorderFactory.createEmptyBorder(1, 6, 1, 6));
     deleteBtn.setFocusPainted(false);
@@ -736,7 +748,7 @@ public class MainFrame extends JFrame {
     return entry;
 }
 
-    // Code 2 Feature: Load a previously saved uploaded file
+    // Load a previously saved uploaded file
     private void loadFileIntoEditor(File file) {
     if (!file.exists()) {
         showError("File no longer exists on disk.");
@@ -752,7 +764,7 @@ public class MainFrame extends JFrame {
     }
 }
 
-    // Code 2 Feature: Save typed/pasted lecture content as a named file
+    // Save typed/pasted lecture content as a named file
     private void saveLectureAsFile() {
         String content = lectureArea.getText().trim();
         if (content.isEmpty()) {
@@ -787,12 +799,12 @@ public class MainFrame extends JFrame {
         }
     }
 
-    // ─────────────────────────────────────────────
+  
     // Question Generation
-    // ─────────────────────────────────────────────
+   
 
     private void generateQuestions() {
-        // Code 2 Feature: Use getSelectedTopic() for flexible input resolution
+        //  Use getSelectedTopic() for flexible input resolution
         String inputText = getSelectedTopic();
         if (inputText.isEmpty()) {
             showError("Upload lecture content or select a topic first!");
@@ -803,7 +815,7 @@ public class MainFrame extends JFrame {
             inputText,
             typeBox.getSelectedItem().toString(),
             difficultyBox.getSelectedItem().toString(),
-            selectedFile != null   // Code 1 Feature: Pass fileUploaded flag
+            selectedFile != null   // Pass fileUploaded flag
         );
 
         outputArea.setText(result);
@@ -813,14 +825,15 @@ public class MainFrame extends JFrame {
         } catch (Exception ex) {
             showError("Failed to save questions.");
         }
-        cardLayout.show(contentPanel, "RESULT");
+        tabbedPane.setEnabledAt(1, true);
+        tabbedPane.setSelectedIndex(1);
+        cardLayout.show(contentPanel, "TABS"); // Make sure tabs view is showing
     }
 
-    // ─────────────────────────────────────────────
     // Utility
-    // ─────────────────────────────────────────────
+    
 
-    // Helper to style buttons consistently
+   
     private void styleButton(JButton btn, Color bg) {
         btn.setBackground(bg);
         btn.setForeground(Color.WHITE);

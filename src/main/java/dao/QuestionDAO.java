@@ -7,10 +7,9 @@ import java.sql.*;
 import java.util.*;
 
 public class QuestionDAO {
-
-    // ─────────────────────────────────────────────
-    // CORE: Get full Question objects by topic
-    // ─────────────────────────────────────────────
+  
+    //Get full Question objects by topic
+   
 
     public List<Question> getQuestions(
             String topic,
@@ -19,12 +18,12 @@ public class QuestionDAO {
 
         List<Question> list = new ArrayList<>();
 
-        // Code 2 Feature: Null/empty guard
+        // Null/empty guard
         if (topic == null || topic.trim().isEmpty()) {
             return list;
         }
 
-        // Code 2 Feature: Resolve to canonical topic before querying
+        // Resolve to canonical topic before querying
         String canonicalTopic = findCanonicalTopic(topic).orElse(topic.trim());
 
         String sql = """
@@ -65,9 +64,9 @@ public class QuestionDAO {
         return list;
     }
 
-    // ─────────────────────────────────────────────
-    // Code 1 Feature: Get only question texts (no options/answers)
-    // ─────────────────────────────────────────────
+   
+    // Get only question texts (no options/answers)
+   
 
     public List<String> getQuestionTexts(
             String topic,
@@ -76,7 +75,7 @@ public class QuestionDAO {
 
         List<String> list = new ArrayList<>();
 
-        // Null/empty guard (consistent with Code 2 style)
+        // Null/empty guard
         if (topic == null || topic.trim().isEmpty()) {
             return list;
         }
@@ -114,9 +113,9 @@ public class QuestionDAO {
         return list;
     }
 
-    // ─────────────────────────────────────────────
-    // Code 1 Feature: Dedicated MCQ question fetcher
-    // ─────────────────────────────────────────────
+   
+    // Dedicated MCQ question fetcher
+   
 
     public List<Question> getMCQQuestions(
             String topic,
@@ -171,9 +170,9 @@ public class QuestionDAO {
         return list;
     }
 
-    // ─────────────────────────────────────────────
-    // Code 2 Feature: Fetch random questions by difficulty only
-    // ─────────────────────────────────────────────
+  
+    // Fetch random questions by difficulty only
+    
 
     public List<Question> getQuestionsByDifficulty(String difficulty, int limit) {
         List<Question> list = new ArrayList<>();
@@ -213,9 +212,9 @@ public class QuestionDAO {
         return list;
     }
 
-    // ─────────────────────────────────────────────
-    // Code 2 Feature: Canonical topic resolution (exact + loose match)
-    // ─────────────────────────────────────────────
+   
+    // Canonical topic resolution (exact + loose match)
+ 
 
     public Optional<String> findCanonicalTopic(String keyword) {
         if (keyword == null) {
@@ -247,22 +246,20 @@ public class QuestionDAO {
         return Optional.empty();
     }
 
-    // ─────────────────────────────────────────────
-    // Code 2 Feature: topicExists now delegates to findCanonicalTopic
-    // ─────────────────────────────────────────────
+   
+    //  topicExists now delegates to findCanonicalTopic
+
 
     public boolean topicExists(String keyword) {
         return findCanonicalTopic(keyword).isPresent();
     }
 
-    // ─────────────────────────────────────────────
-    // PRIVATE HELPERS
-    // ─────────────────────────────────────────────
+    
 
     private List<String> getOptions(int qid) throws SQLException {
         List<String> options = new ArrayList<>();
 
-        // Code 2 Feature: ORDER BY option_id for consistent ordering
+        // ORDER BY option_id for consistent ordering
         String sql = "SELECT option_text FROM options WHERE question_id=? ORDER BY option_id";
 
         try (Connection con = DBConnection.getConnection();
@@ -290,7 +287,7 @@ public class QuestionDAO {
             ps.setInt(1, qid);
             ResultSet rs = ps.executeQuery();
 
-            // Code 2 Feature: Properly calculate correct option index position
+            // Properly calculate correct option index position
             if (!rs.next()) return -1;
 
             int correctOptionId = rs.getInt("option_id");
@@ -311,9 +308,9 @@ public class QuestionDAO {
         }
     }
 
-    // ─────────────────────────────────────────────
-    // Shared: Fetch all topics for dropdowns and canonical matching
-    // ─────────────────────────────────────────────
+   
+    //Fetch all topics for dropdowns and canonical matching
+  
 
     public List<String> getAllTopics() {
         List<String> topics = new ArrayList<>();
