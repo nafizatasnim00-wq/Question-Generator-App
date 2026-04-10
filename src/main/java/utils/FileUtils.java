@@ -15,9 +15,9 @@ import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 
 public class FileUtils {
 
-    // ─────────────────────────────────────────────
+    
     // Read
-    // ─────────────────────────────────────────────
+   
 
     public static String readFile(File file) throws IOException {
         String name = file.getName().toLowerCase();
@@ -55,9 +55,9 @@ public class FileUtils {
         }
     }
 
-    // ─────────────────────────────────────────────
+   
     // Write
-    // ─────────────────────────────────────────────
+  
 
     public static void writeFile(String name, String content) throws IOException {
         try (FileWriter writer = new FileWriter(name)) {
@@ -65,9 +65,9 @@ public class FileUtils {
         }
     }
 
-    // ─────────────────────────────────────────────
-    // Code 2 Feature: Upload Directory Management
-    // ─────────────────────────────────────────────
+ 
+    // Upload Directory Management
+
 
     // Returns the upload directory, creating it if it doesn't exist
     public static File getUploadDir() {

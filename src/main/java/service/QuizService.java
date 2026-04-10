@@ -41,11 +41,22 @@ public List<Question> createQuiz(
         return finalQuiz;
     }
 
-    return QuestionGenerator.generateQuiz(
-            text,
-            difficulty,
-            new DBOptionProvider()
+   OptionProvider fallbackProvider = new OptionProvider() {
+    @Override
+    public List<String> getOptions(String keyword, String difficulty) {
+        return List.of(
+            "Option A related to " + keyword,
+            "Option B related to " + keyword,
+            "Option C related to " + keyword,
+            "Option D related to " + keyword
         );
+    }
+    @Override
+    public int getCorrectIndex(String keyword) {
+        return 0;
+    }
+};
+return QuestionGenerator.generateQuiz(text, difficulty, fallbackProvider);
     }
 
 
