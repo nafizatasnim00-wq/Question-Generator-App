@@ -1,0 +1,3 @@
+Java supports object oriented programming.
+Encapsulation, inheritance and polymorphism are core concepts.
+Swing is used to build GUI applications.

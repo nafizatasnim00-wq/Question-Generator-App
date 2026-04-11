@@ -7,7 +7,7 @@ public class KeywordExtractor {
     "called","using","having","there","their","these","those",
     "where","which","whose","about","because","while",
     "this","that","into","between","after","before",
-    "from","with","without","should","could"
+    "from","with","without","should","could","were"
 );
 
 private static List<String> extractPhrases(String text) {

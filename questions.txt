@@ -1,14 +1,27 @@
-Question Type: Short
+Question Type: MCQ
 Difficulty: Easy
 
-Topic: Exception Handling
+Topic: Inheritance
 
-1. What is the purpose of a try-catch block?
+1. What is inheritance in OOP?
+   a) Process of hiding data
+   b) Binding data and methods
+   c) Mechanism to acquire properties and methods from parent class
+   d) Creating new classes
+   Correct answer: c
 
-2. What is exception handling?
+2. What are the advantages of inheritance?
+   a) Code reusability and reduced redundancy
+   b) Increased memory usage
+   c) Faster execution time
+   d) More complex code
+   Correct answer: a
 
-3. What is the purpose of try-catch block?
-
-4. What is throw keyword?
+3. Explain single inheritance.
+   a) A class inherits from multiple classes
+   b) A class inherits from one parent class
+   c) A class is inherited by multiple classes
+   d) Classes inherit methods from interfaces
+   Correct answer: b
 
 

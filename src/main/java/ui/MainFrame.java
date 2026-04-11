@@ -641,7 +641,7 @@ public class MainFrame extends JFrame {
         return "";
     }
 
-    // Refresh saved files dropdown from upload directory
+    // Refresh saved files from upload directory
     private void refreshSavedFiles() {
     if (savedFilesPanel == null) return;
 
